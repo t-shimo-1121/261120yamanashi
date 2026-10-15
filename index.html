@@ -7,7 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="山梨しおり">
-<meta name="theme-color" content="#2E6A86">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#2E6A86">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1F1D19">
+<script>/* 旅行当日は表紙を小さく（描画前に判定） */
+(function(){var d=new Date(),k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");if(["2026-11-20","2026-11-21","2026-11-22","2026-11-23"].indexOf(k)>=0)document.documentElement.classList.add("trip");})();</script>
 <title>山梨旅行 2026.11.20-23</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,6 +98,17 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
   font-variant-numeric:tabular-nums;
 }
 .cover-cap .count{margin-top:.1rem;font-size:.76rem;color:var(--ink-3);letter-spacing:.04em;}
+.cover-cap .count b{font-family:var(--font-display);font-weight:900;font-size:1.5rem;color:var(--brand);
+  margin:0 .15rem;vertical-align:-.12em;font-variant-numeric:tabular-nums;}
+/* 旅行当日：表紙を細い帯に */
+.trip .cover{display:flex;align-items:center;gap:.7rem;margin:.1rem 0 .3rem;filter:none;}
+.trip .cover-frame{flex:none;width:4.2rem;padding:3px;border-radius:12px;}
+.trip .cover-frame img{aspect-ratio:1;object-fit:cover;border-radius:9px;}
+.trip .cover-cap{padding:0;text-align:left;}
+.trip .cover-cap h1{font-size:1.1rem;}
+.trip .cover-cap .date{font-size:.72rem;margin-top:0;}
+.trip .cover-cap .count{font-size:.72rem;margin-top:0;}
+.trip .cover-cap .count b{font-size:1rem;vertical-align:0;}
 
 /* ───────── タブ ───────── */
 .tabs{
@@ -149,12 +163,14 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
   padding:.28rem .7rem;border-radius:999px;letter-spacing:.02em;
 }
 .tag .ic{font-size:.95rem;}
+.tag.only{padding:0;width:2rem;height:2rem;justify-content:center;}
+.tag.only .ic{font-size:1.1rem;}
 .card-title{font-family:var(--font-display);font-weight:700;font-size:1.02rem;line-height:1.3;}
 
-.day1{--c:hsl(var(--h-d1),42%,40%);--c-bg:hsl(var(--h-d1),42%,94%);}
-.day2{--c:hsl(var(--h-d2),50%,38%);--c-bg:hsl(var(--h-d2),50%,94%);}
-.day3{--c:hsl(var(--h-d3),46%,32%);--c-bg:hsl(var(--h-d3),40%,93%);}
-.day4{--c:hsl(var(--h-d4),46%,40%);--c-bg:hsl(var(--h-d4),44%,95%);}
+.day1{--c:hsl(var(--h-d1),42%,40%);--c-bg:hsl(var(--h-d1),42%,94%);--c-tint:hsl(var(--h-d1),42%,97%);}
+.day2{--c:hsl(var(--h-d2),50%,38%);--c-bg:hsl(var(--h-d2),50%,94%);--c-tint:hsl(var(--h-d2),50%,97%);}
+.day3{--c:hsl(var(--h-d3),46%,32%);--c-bg:hsl(var(--h-d3),40%,93%);--c-tint:hsl(var(--h-d3),40%,96%);}
+.day4{--c:hsl(var(--h-d4),46%,40%);--c-bg:hsl(var(--h-d4),44%,95%);--c-tint:hsl(var(--h-d4),44%,98%);}
 .pack{--c:hsl(var(--h-pack),52%,36%);--c-bg:hsl(var(--h-pack),50%,93%);}
 
 /* ───────── 山データ（登山日のカード上部） ───────── */
@@ -226,9 +242,31 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
 }
 .hl{font-weight:700;color:var(--c);background:var(--c-bg);padding:.05rem .3rem;border-radius:5px;}
 .warn{font-weight:700;color:var(--alert);}
+a.map{color:inherit;text-decoration:underline dotted var(--c);text-decoration-thickness:2px;
+  text-underline-offset:4px;-webkit-tap-highlight-color:transparent;}
+a.map:active{background:var(--c-bg);}
 .tl.stay{background:hsla(var(--h-base),30%,50%,.05);}
-.tl.hike{background:hsla(var(--h-base),30%,50%,.05);}
-.tl.now{background:hsla(var(--h-d2),70%,50%,.10);}
+.tl.hike{background:var(--c-tint);}
+.tl.hike::before{ /* 登山区間は背骨を日の色で太く */
+  content:"";position:absolute;top:0;bottom:0;
+  left:calc(var(--row-pad) + var(--col-time) + var(--col-gap) + var(--col-ico)/2 - 2px);
+  width:4px;background:var(--c);opacity:.55;
+}
+.tl.hike .t-ico{background:var(--c-tint);position:relative;z-index:1;}
+.tl.now{background:var(--c-bg);box-shadow:inset 4px 0 0 var(--c);}
+.tl.past,.sun.past{opacity:.4;}
+.sun{
+  position:relative;display:grid;grid-template-columns:var(--col-time) var(--col-ico) 1fr;
+  column-gap:var(--col-gap);align-items:center;
+  padding:.15rem var(--row-pad);border-bottom:1px dashed var(--line-soft);
+  font-size:.72rem;line-height:22px;color:var(--ink-3);letter-spacing:.04em;
+}
+.sun .s-t{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;}
+.sun .s-d{justify-self:center;width:.55rem;height:.55rem;border-radius:50%;
+  background:var(--panel);border:2px solid var(--ink-3);position:relative;z-index:1;}
+.sun.set .s-d{background:var(--ink-3);}
+.sun.in-hike{background:var(--c-tint);}
+.sun.in-hike::before{content:"";position:absolute;top:0;bottom:0;left:calc(var(--row-pad) + var(--col-time) + var(--col-gap) + var(--col-ico)/2 - 2px);width:4px;background:var(--c);opacity:.55;}
 .tl.now::after{
   content:"今ここ";position:absolute;right:.6rem;top:.35rem;
   font-size:.62rem;font-weight:700;color:#fff;background:var(--c);
@@ -267,8 +305,17 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
 .item .txt small{display:block;font-size:.76rem;font-weight:400;color:var(--ink-3);line-height:1.55;margin-top:.05rem;}
 .item.checked .txt{text-decoration:line-through;color:var(--ink-3);}
 .item.checked .txt small{color:var(--ink-3);}
+.fold{
+  margin-left:auto;font-family:var(--font-body);font-size:.7rem;font-weight:700;color:var(--ink-2);
+  background:none;border:1px solid var(--line);border-radius:999px;padding:.12rem .65rem;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.fold[aria-pressed="true"]{color:var(--c);border-color:var(--c);}
+.hide-done .item.checked:not(.just),.hide-done .cat.done{display:none;}
+.all-done{display:none;padding:1.1rem .75rem;text-align:center;font-size:.86rem;font-weight:700;color:var(--c);}
+.hide-done.complete .all-done{display:block;}
 .counter{
-  margin-left:auto;font-size:.74rem;font-weight:700;color:var(--c);
+  margin-left:0;font-size:.74rem;font-weight:700;color:var(--c);
   background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:.1rem .6rem;
   font-variant-numeric:tabular-nums;
 }
@@ -304,12 +351,13 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
     --alert:     hsl(14, 70%, 64%);
   }
   body{background-image:radial-gradient(hsla(var(--h-base),20%,70%,.07) 1.1px, transparent 1.1px);}
-  .day1{--c:hsl(var(--h-d1),48%,60%);--c-bg:hsl(var(--h-d1),26%,18%);}
-  .day2{--c:hsl(var(--h-d2),52%,64%);--c-bg:hsl(var(--h-d2),26%,19%);}
-  .day3{--c:hsl(var(--h-d3),45%,60%);--c-bg:hsl(var(--h-d3),26%,18%);}
-  .day4{--c:hsl(var(--h-d4),55%,68%);--c-bg:hsl(var(--h-d4),26%,19%);}
+  .day1{--c:hsl(var(--h-d1),48%,60%);--c-bg:hsl(var(--h-d1),26%,18%);--c-tint:hsl(var(--h-d1),26%,16%);}
+  .day2{--c:hsl(var(--h-d2),52%,64%);--c-bg:hsl(var(--h-d2),26%,19%);--c-tint:hsl(var(--h-d2),26%,17%);}
+  .day3{--c:hsl(var(--h-d3),45%,60%);--c-bg:hsl(var(--h-d3),26%,18%);--c-tint:hsl(var(--h-d3),26%,16%);}
+  .day4{--c:hsl(var(--h-d4),55%,68%);--c-bg:hsl(var(--h-d4),26%,19%);--c-tint:hsl(var(--h-d4),26%,17%);}
   .pack{--c:hsl(var(--h-pack),55%,60%);--c-bg:hsl(var(--h-pack),26%,18%);}
   .tab-btn.active{color:hsl(var(--h-base),15%,10%);}
+  .cover-frame img{filter:brightness(.86) saturate(.95);}
   .tl.now::after,.tag{color:hsl(var(--h-base),15%,10%);}
 }
 </style>
@@ -384,7 +432,9 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
 
     <div class="card pack">
       <div class="card-head">
-        <span class="tag"><svg class="ic"><use href="#i-bag"/></svg>持ち物</span>
+        <span class="tag only" aria-hidden="true"><svg class="ic"><use href="#i-bag"/></svg></span>
+        <div class="card-title">持ち物</div>
+        <button class="fold" type="button" aria-pressed="false">済みを隠す</button>
         <span class="counter"></span>
       </div>
 
@@ -414,12 +464,14 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
       <div class="item"><span class="box"></span><span class="txt">シャンプー・保湿・洗剤</span></div>
       <div class="item"><span class="box"></span><span class="txt">ティッシュ・ウェット</span></div>
       <div class="item"><span class="box"></span><span class="txt">体温計・坐薬・ロコイド</span></div>
+      <div class="all-done">すべて準備完了</div>
 
     </div>
 
     <div class="card pack">
       <div class="card-head">
-        <span class="tag"><svg class="ic"><use href="#i-coin"/></svg>費用</span>
+        <span class="tag only" aria-hidden="true"><svg class="ic"><use href="#i-coin"/></svg></span>
+        <div class="card-title">費用</div>
       </div>
 
       <div class="mt">
@@ -467,18 +519,19 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
   <div class="tab-panel" id="day1">
     <div class="card day1" data-date="2026-11-20">
       <div class="card-head">
-        <span class="tag"><svg class="ic"><use href="#i-bullet"/></svg>11/20（金）</span>
+        <span class="tag only" aria-label="11/20（金）"><svg class="ic"><use href="#i-bullet"/></svg></span>
         <div class="card-title">甲府へ</div>
       </div>
       <div class="trail">
         <div class="tl" data-t="15:30"><div class="t-start">15:30</div><div class="t-dur">0:28</div><div class="t-ico"><svg class="ic"><use href="#i-shop"/></svg></div><div class="t-sum">新潟駅集合・夕食購入</div><div class="t-det">駅弁・惣菜を買う</div></div>
         <div class="tl" data-t="15:58"><div class="t-start">15:58</div><div class="t-dur">1:36</div><div class="t-ico"><svg class="ic"><use href="#i-bullet"/></svg></div><div class="t-sum">とき332号→大宮</div><div class="t-det">上越新幹線・<span class="hl">指定席を予約</span>。車内で早めの夕食</div></div>
+        <div class="sun set" data-t="16:34"><div class="s-t">16:34</div><div class="s-d"></div><div>日の入</div></div>
         <div class="tl" data-t="17:34"><div class="t-start">17:34</div><div class="t-dur">0:07</div><div class="t-ico"><svg class="ic"><use href="#i-swap"/></svg></div><div class="t-sum">大宮駅 乗り換え</div><div class="t-det"><span class="warn">乗換7分</span>。湘南新宿ラインのホームへ直行。遅れても後続の湘南新宿ラインか埼京線で18:30に間に合う</div></div>
         <div class="tl" data-t="17:41"><div class="t-start">17:41</div><div class="t-dur">0:32</div><div class="t-ico"><svg class="ic"><use href="#i-train"/></svg></div><div class="t-sum">湘南新宿ライン→新宿</div><div class="t-det">快速</div></div>
         <div class="tl" data-t="18:13"><div class="t-start">18:13</div><div class="t-dur">0:17</div><div class="t-ico"><svg class="ic"><use href="#i-swap"/></svg></div><div class="t-sum">新宿駅 乗り換え</div><div class="t-det">乗換17分。特急あずさのホームへ</div></div>
         <div class="tl" data-t="18:30"><div class="t-start">18:30</div><div class="t-dur">1:27</div><div class="t-ico"><svg class="ic"><use href="#i-bullet"/></svg></div><div class="t-sum">あずさ49号→甲府</div><div class="t-det">中央本線・<span class="hl">指定席を予約</span></div></div>
         <div class="tl" data-t="19:57"><div class="t-start">19:57</div><div class="t-dur">0:18</div><div class="t-ico"><svg class="ic"><use href="#i-walk"/></svg></div><div class="t-sum">徒歩→ドーミーイン</div><div class="t-det">甲府駅南口から約8分</div></div>
-        <div class="tl" data-t="20:15"><div class="t-start">20:15</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-lodge"/></svg></div><div class="t-sum">ドーミーイン チェックイン</div><div class="t-det">ドーミーイン甲府丸の内。禁煙ツイン、朝食付、カード決済済み</div></div>
+        <div class="tl" data-t="20:15"><div class="t-start">20:15</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-lodge"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E3%83%89%E3%83%BC%E3%83%9F%E3%83%BC%E3%82%A4%E3%83%B3%E7%94%B2%E5%BA%9C%E4%B8%B8%E3%81%AE%E5%86%85" target="_blank" rel="noopener">ドーミーイン</a> チェックイン</div><div class="t-det">ドーミーイン甲府丸の内。禁煙ツイン、朝食付、カード決済済み</div></div>
         <div class="tl" data-t="20:30"><div class="t-start">20:30</div><div class="t-dur">0:30</div><div class="t-ico"><svg class="ic"><use href="#i-shop"/></svg></div><div class="t-sum">行動食・水を調達</div><div class="t-det">駅周辺やコンビニで2日分。<span class="hl">山小屋では買い足しが限られる</span></div></div>
         <div class="tl stay" data-t="21:00"><div class="t-start">21:00</div><div class="t-dur">1:00</div><div class="t-ico"><svg class="ic"><use href="#i-bath"/></svg></div><div class="t-sum">大浴場「勝運の湯」</div><div class="t-det">最上階の天然温泉</div></div>
         <div class="tl stay" data-t="22:00"><div class="t-start">22:00</div><div class="t-dur">8:00</div><div class="t-ico"><svg class="ic"><use href="#i-moon"/></svg></div><div class="t-sum">就寝</div><div class="t-det">翌朝6:00起床</div></div>
@@ -497,31 +550,33 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
   <div class="tab-panel" id="day2">
     <div class="card day2" data-date="2026-11-21">
       <div class="card-head">
-        <span class="tag"><svg class="ic"><use href="#i-mtn"/></svg>11/21（土）</span>
+        <span class="tag only" aria-label="11/21（土）"><svg class="ic"><use href="#i-mtn"/></svg></span>
         <div class="card-title">瑞牆山 登山 → 富士見平小屋</div>
       </div>
       <div class="mt">
         <div class="stats stats-3">
-          <div class="s"><div class="n">2,230<span class="u">m</span></div><div class="l">標高<br>百名山16座目</div></div>
-          <div class="s"><div class="n">5:26</div><div class="l">コースタイム<br>休憩30分</div></div>
-          <div class="s"><div class="n">19</div><div class="l">コース定数<br>ふつう</div></div>
+          <div class="s"><div class="n">2,230<span class="u">m</span></div><div class="l">百名山16座目</div></div>
+          <div class="s"><div class="n">5:26</div><div class="l">休憩30分</div></div>
+          <div class="s"><div class="n">19</div><div class="l">ふつう</div></div>
         </div>
       </div>
       <div class="trail">
         <div class="tl" data-t="06:00"><div class="t-start">6:00</div><div class="t-dur">0:30</div><div class="t-ico"><svg class="ic"><use href="#i-sun"/></svg></div><div class="t-sum">起床・準備</div></div>
+        <div class="sun" data-t="06:28"><div class="s-t">6:28</div><div class="s-d"></div><div>日の出</div></div>
         <div class="tl" data-t="06:30"><div class="t-start">6:30</div><div class="t-dur">0:30</div><div class="t-ico"><svg class="ic"><use href="#i-fork"/></svg></div><div class="t-sum">朝食ビュッフェ</div></div>
         <div class="tl" data-t="07:00"><div class="t-start">7:00</div><div class="t-dur">0:45</div><div class="t-ico"><svg class="ic"><use href="#i-lodge"/></svg></div><div class="t-sum">支度・チェックアウト</div></div>
         <div class="tl" data-t="07:45"><div class="t-start">7:45</div><div class="t-dur">0:23</div><div class="t-ico"><svg class="ic"><use href="#i-walk"/></svg></div><div class="t-sum">徒歩→甲府駅</div><div class="t-det">南口まで約8分</div></div>
         <div class="tl" data-t="08:08"><div class="t-start">8:08</div><div class="t-dur">0:13</div><div class="t-ico"><svg class="ic"><use href="#i-train"/></svg></div><div class="t-sum">中央本線→韮崎</div><div class="t-det">普通・松本行</div></div>
         <div class="tl" data-t="08:21"><div class="t-start">8:21</div><div class="t-dur">0:29</div><div class="t-ico"><svg class="ic"><use href="#i-swap"/></svg></div><div class="t-sum">韮崎駅 バス待ち</div><div class="t-det">駅前<span class="hl">2番乗り場</span>。トイレはここで</div></div>
         <div class="tl" data-t="08:50"><div class="t-start">8:50</div><div class="t-dur">1:15</div><div class="t-ico"><svg class="ic"><use href="#i-bus"/></svg></div><div class="t-sum">韮崎瑞牆線→瑞牆山荘</div><div class="t-det">山梨峡北交通・始発便。<span class="warn">現金かスマホ決済のみ</span>（Suica・カード不可、両替不可）</div></div>
-        <div class="tl" data-t="10:05"><div class="t-start">10:05</div><div class="t-dur">0:10</div><div class="t-ico"><svg class="ic"><use href="#i-pin"/></svg></div><div class="t-sum">瑞牆山荘 到着</div><div class="t-det">準備運動・トイレ</div></div>
+        <div class="tl" data-t="10:05"><div class="t-start">10:05</div><div class="t-dur">0:10</div><div class="t-ico"><svg class="ic"><use href="#i-pin"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E7%91%9E%E7%89%86%E5%B1%B1%E8%8D%98" target="_blank" rel="noopener">瑞牆山荘</a> 到着</div><div class="t-det">準備運動・トイレ</div></div>
         <div class="tl hike" data-t="10:15"><div class="t-start">10:15</div><div class="t-dur">0:58</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">瑞牆山荘（登山開始）</div></div>
-        <div class="tl hike" data-t="11:13"><div class="t-start">11:13</div><div class="t-dur">0:47</div><div class="t-ico"><svg class="ic"><use href="#i-lodge"/></svg></div><div class="t-sum">富士見平小屋</div><div class="t-det"><span class="hl">1泊2食を予約</span>。受付して宿泊荷物をデポ。百名山バッジ（瑞牆山・金峰山）を購入。15分休憩して11:28発、天鳥川までいったん下る</div></div>
+        <div class="tl hike" data-t="11:13"><div class="t-start">11:13</div><div class="t-dur">0:47</div><div class="t-ico"><svg class="ic"><use href="#i-lodge"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E5%AF%8C%E5%A3%AB%E8%A6%8B%E5%B9%B3%E5%B0%8F%E5%B1%8B" target="_blank" rel="noopener">富士見平小屋</a></div><div class="t-det"><span class="hl">1泊2食を予約</span>。受付して宿泊荷物をデポ。百名山バッジ（瑞牆山・金峰山）を購入。15分休憩して11:28発、天鳥川までいったん下る</div></div>
         <div class="tl hike" data-t="12:00"><div class="t-start">12:00</div><div class="t-dur">1:38</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">天鳥川出合・桃太郎岩</div><div class="t-det">ここから山頂まで急登。梯子と鎖が続く</div></div>
-        <div class="tl hike" data-t="13:38"><div class="t-start">13:38</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-summit"/></svg></div><div class="t-sum">瑞牆山 山頂（2,230m）</div><div class="t-det">日本百名山 通算16座目。15分休憩・昼食。大ヤスリ岩と金峰山を望む</div></div>
+        <div class="tl hike" data-t="13:38"><div class="t-start">13:38</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-summit"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E7%91%9E%E7%89%86%E5%B1%B1" target="_blank" rel="noopener">瑞牆山 山頂</a>（2,230m）</div><div class="t-det">日本百名山 通算16座目。15分休憩・昼食。大ヤスリ岩と金峰山を望む</div></div>
         <div class="tl hike" data-t="13:53"><div class="t-start">13:53</div><div class="t-dur">1:48</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">下山開始</div><div class="t-det">往路を戻る。<span class="warn">日陰の岩は凍結に注意</span></div></div>
         <div class="tl hike" data-t="15:41"><div class="t-start">15:41</div><div class="t-dur">1:49</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">富士見平小屋（下山完了）</div><div class="t-det">16:00までに帰着。日入は16:35</div></div>
+        <div class="sun set" data-t="16:35"><div class="s-t">16:35</div><div class="s-d"></div><div>日の入</div></div>
         <div class="tl stay" data-t="17:30"><div class="t-start">17:30</div><div class="t-dur">1:00</div><div class="t-ico"><svg class="ic"><use href="#i-fork"/></svg></div><div class="t-sum">小屋の夕食</div><div class="t-det">名物のジビエ料理</div></div>
         <div class="tl stay" data-t="18:30"><div class="t-start">18:30</div><div class="t-dur">2:30</div><div class="t-ico"><svg class="ic"><use href="#i-gear"/></svg></div><div class="t-sum">明朝の支度・荷分け</div><div class="t-det">金峰山へ持つ分とデポする分を分ける</div></div>
         <div class="tl stay" data-t="21:00"><div class="t-start">21:00</div><div class="t-dur">8:00</div><div class="t-ico"><svg class="ic"><use href="#i-moon"/></svg></div><div class="t-sum">消灯・就寝</div><div class="t-det">翌朝5:00起床</div></div>
@@ -542,24 +597,25 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
   <div class="tab-panel" id="day3">
     <div class="card day3" data-date="2026-11-22">
       <div class="card-head">
-        <span class="tag"><svg class="ic"><use href="#i-mtn"/></svg>11/22（日）</span>
+        <span class="tag only" aria-label="11/22（日）"><svg class="ic"><use href="#i-mtn"/></svg></span>
         <div class="card-title">金峰山 登山 → 原宿</div>
       </div>
       <div class="mt">
         <div class="stats stats-3">
-          <div class="s"><div class="n">2,599<span class="u">m</span></div><div class="l">標高<br>百名山17座目</div></div>
-          <div class="s"><div class="n">8:10</div><div class="l">コースタイム<br>休憩30分</div></div>
-          <div class="s"><div class="n">26</div><div class="l">コース定数<br>きつい</div></div>
+          <div class="s"><div class="n">2,599<span class="u">m</span></div><div class="l">百名山17座目</div></div>
+          <div class="s"><div class="n">8:10</div><div class="l">休憩30分</div></div>
+          <div class="s"><div class="n">26</div><div class="l">きつい</div></div>
         </div>
       </div>
       <div class="trail">
         <div class="tl" data-t="05:00"><div class="t-start">5:00</div><div class="t-dur">0:30</div><div class="t-ico"><svg class="ic"><use href="#i-sun"/></svg></div><div class="t-sum">起床・身支度</div></div>
         <div class="tl" data-t="05:30"><div class="t-start">5:30</div><div class="t-dur">0:30</div><div class="t-ico"><svg class="ic"><use href="#i-fork"/></svg></div><div class="t-sum">小屋の朝食</div></div>
         <div class="tl hike" data-t="06:00"><div class="t-start">6:00</div><div class="t-dur">1:00</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">富士見平小屋（登山開始）</div><div class="t-det">荷物は小屋にデポ。<span class="warn">日の出6:28前なのでクリップライトを点けて出る</span></div></div>
+        <div class="sun in-hike" data-t="06:28"><div class="s-t">6:28</div><div class="s-d"></div><div>日の出</div></div>
         <div class="tl hike" data-t="07:00"><div class="t-start">7:00</div><div class="t-dur">1:25</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">大日小屋</div></div>
         <div class="tl hike" data-t="08:25"><div class="t-start">8:25</div><div class="t-dur">0:25</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">丸山</div></div>
         <div class="tl hike" data-t="08:50"><div class="t-start">8:50</div><div class="t-dur">1:02</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">砂払ノ頭</div><div class="t-det">森林限界を抜けて稜線歩きへ。<span class="warn">風が強いので防寒着と手袋をここで</span></div></div>
-        <div class="tl hike" data-t="09:52"><div class="t-start">9:52</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-summit"/></svg></div><div class="t-sum">金峰山 山頂（2,599m）</div><div class="t-det">日本百名山 通算17座目。15分休憩。五丈岩、晴れれば富士山と南アルプス</div></div>
+        <div class="tl hike" data-t="09:52"><div class="t-start">9:52</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-summit"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E9%87%91%E5%B3%B0%E5%B1%B1" target="_blank" rel="noopener">金峰山 山頂</a>（2,599m）</div><div class="t-det">日本百名山 通算17座目。15分休憩。五丈岩、晴れれば富士山と南アルプス</div></div>
         <div class="tl hike" data-t="10:07"><div class="t-start">10:07</div><div class="t-dur">0:52</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">下山開始</div><div class="t-det">往路を慎重に戻る。<span class="warn">遅くとも10:15には山頂を出る</span></div></div>
         <div class="tl hike" data-t="10:59"><div class="t-start">10:59</div><div class="t-dur">0:20</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">砂払ノ頭</div></div>
         <div class="tl hike" data-t="11:19"><div class="t-start">11:19</div><div class="t-dur">1:05</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">丸山</div></div>
@@ -571,10 +627,11 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
         <div class="tl" data-t="15:58"><div class="t-start">15:58</div><div class="t-dur">0:14</div><div class="t-ico"><svg class="ic"><use href="#i-train"/></svg></div><div class="t-sum">中央本線→甲府</div><div class="t-det">普通・高尾行</div></div>
         <div class="tl" data-t="16:12"><div class="t-start">16:12</div><div class="t-dur">0:20</div><div class="t-ico"><svg class="ic"><use href="#i-swap"/></svg></div><div class="t-sum">甲府駅 乗り換え</div></div>
         <div class="tl" data-t="16:32"><div class="t-start">16:32</div><div class="t-dur">1:33</div><div class="t-ico"><svg class="ic"><use href="#i-bullet"/></svg></div><div class="t-sum">かいじ44号→新宿</div><div class="t-det">中央本線・<span class="hl">指定席を予約</span></div></div>
+        <div class="sun set" data-t="16:35"><div class="s-t">16:35</div><div class="s-d"></div><div>日の入</div></div>
         <div class="tl" data-t="18:05"><div class="t-start">18:05</div><div class="t-dur">0:10</div><div class="t-ico"><svg class="ic"><use href="#i-swap"/></svg></div><div class="t-sum">新宿駅 乗り換え</div><div class="t-det">山手線内回りの<span class="hl">14番線</span>へ。15番線は逆回り</div></div>
-        <div class="tl" data-t="18:15"><div class="t-start">18:15</div><div class="t-dur">0:04</div><div class="t-ico"><svg class="ic"><use href="#i-train"/></svg></div><div class="t-sum">山手線→原宿</div><div class="t-det">内回り・渋谷方面</div></div>
+        <div class="tl" data-t="18:15"><div class="t-start">18:15</div><div class="t-dur"></div><div class="t-ico"><svg class="ic"><use href="#i-train"/></svg></div><div class="t-sum">山手線→原宿</div><div class="t-det">内回り・渋谷方面</div></div>
         <div class="tl" data-t="18:19"><div class="t-start">18:19</div><div class="t-dur">0:16</div><div class="t-ico"><svg class="ic"><use href="#i-walk"/></svg></div><div class="t-sum">徒歩→ドーミーイン</div><div class="t-det">途中で夕食を購入</div></div>
-        <div class="tl" data-t="18:35"><div class="t-start">18:35</div><div class="t-dur">0:25</div><div class="t-ico"><svg class="ic"><use href="#i-lodge"/></svg></div><div class="t-sum">ドーミーイン チェックイン</div><div class="t-det">ドーミーインPREMIUM渋谷神宮前。禁煙ダブル、朝食付、カード決済済み。先に<span class="hl">コインランドリーを回す</span></div></div>
+        <div class="tl" data-t="18:35"><div class="t-start">18:35</div><div class="t-dur">0:25</div><div class="t-ico"><svg class="ic"><use href="#i-lodge"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E3%83%89%E3%83%BC%E3%83%9F%E3%83%BC%E3%82%A4%E3%83%B3PREMIUM%E6%B8%8B%E8%B0%B7%E7%A5%9E%E5%AE%AE%E5%89%8D" target="_blank" rel="noopener">ドーミーイン</a> チェックイン</div><div class="t-det">ドーミーインPREMIUM渋谷神宮前。禁煙ダブル、朝食付、カード決済済み。先に<span class="hl">コインランドリーを回す</span></div></div>
         <div class="tl stay" data-t="19:00"><div class="t-start">19:00</div><div class="t-dur">1:00</div><div class="t-ico"><svg class="ic"><use href="#i-bath"/></svg></div><div class="t-sum">2階の大浴場</div><div class="t-det">超微細気泡・軟水風呂で脚をほぐす</div></div>
         <div class="tl stay" data-t="20:00"><div class="t-start">20:00</div><div class="t-dur">1:30</div><div class="t-ico"><svg class="ic"><use href="#i-fork"/></svg></div><div class="t-sum">夕食</div></div>
         <div class="tl stay" data-t="21:30"><div class="t-start">21:30</div><div class="t-dur">0:30</div><div class="t-ico"><svg class="ic"><use href="#i-gear"/></svg></div><div class="t-sum">洗濯物の回収・荷造り</div></div>
@@ -595,21 +652,22 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
   <div class="tab-panel" id="day4">
     <div class="card day4" data-date="2026-11-23">
       <div class="card-head">
-        <span class="tag"><svg class="ic"><use href="#i-shop"/></svg>11/23（月・祝）</span>
+        <span class="tag only" aria-label="11/23（月・祝）"><svg class="ic"><use href="#i-shop"/></svg></span>
         <div class="card-title">新宿 → 帰路</div>
       </div>
       <div class="trail">
+        <div class="sun" data-t="06:25"><div class="s-t">6:25</div><div class="s-d"></div><div>日の出</div></div>
         <div class="tl" data-t="07:00"><div class="t-start">7:00</div><div class="t-dur">0:30</div><div class="t-ico"><svg class="ic"><use href="#i-sun"/></svg></div><div class="t-sum">起床・準備</div></div>
         <div class="tl" data-t="07:30"><div class="t-start">7:30</div><div class="t-dur">1:15</div><div class="t-ico"><svg class="ic"><use href="#i-fork"/></svg></div><div class="t-sum">朝食ビュッフェ</div></div>
         <div class="tl" data-t="08:45"><div class="t-start">8:45</div><div class="t-dur">0:30</div><div class="t-ico"><svg class="ic"><use href="#i-gear"/></svg></div><div class="t-sum">支度・荷物の最終確認</div></div>
         <div class="tl" data-t="09:15"><div class="t-start">9:15</div><div class="t-dur">0:10</div><div class="t-ico"><svg class="ic"><use href="#i-lodge"/></svg></div><div class="t-sum">チェックアウト</div></div>
         <div class="tl" data-t="09:25"><div class="t-start">9:25</div><div class="t-dur">0:08</div><div class="t-ico"><svg class="ic"><use href="#i-walk"/></svg></div><div class="t-sum">徒歩→原宿駅</div></div>
-        <div class="tl" data-t="09:33"><div class="t-start">9:33</div><div class="t-dur">0:04</div><div class="t-ico"><svg class="ic"><use href="#i-train"/></svg></div><div class="t-sum">山手線→新宿</div><div class="t-det">外回り・新宿方面</div></div>
+        <div class="tl" data-t="09:33"><div class="t-start">9:33</div><div class="t-dur"></div><div class="t-ico"><svg class="ic"><use href="#i-train"/></svg></div><div class="t-sum">山手線→新宿</div><div class="t-det">外回り・新宿方面</div></div>
         <div class="tl" data-t="09:37"><div class="t-start">9:37</div><div class="t-dur">0:08</div><div class="t-ico"><svg class="ic"><use href="#i-walk"/></svg></div><div class="t-sum">徒歩→新宿駅東口</div></div>
         <div class="tl" data-t="09:45"><div class="t-start">9:45</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-bag"/></svg></div><div class="t-sum">コインロッカーに預ける</div><div class="t-det">東口・中央東口周辺。登山ザックを預けて身軽に</div></div>
-        <div class="tl" data-t="10:00"><div class="t-start">10:00</div><div class="t-dur">1:00</div><div class="t-ico"><svg class="ic"><use href="#i-game"/></svg></div><div class="t-sum">タイトーステーション</div><div class="t-det">新宿南口ゲームワールド店。10:00開店。アーケードとクレーンゲーム</div></div>
-        <div class="tl" data-t="11:00"><div class="t-start">11:00</div><div class="t-dur">1:00</div><div class="t-ico"><svg class="ic"><use href="#i-shop"/></svg></div><div class="t-sum">ハンズ新宿店</div><div class="t-det">タカシマヤ タイムズスクエア内。バッグ・トラベルギア・雑貨</div></div>
-        <div class="tl" data-t="12:00"><div class="t-start">12:00</div><div class="t-dur">0:45</div><div class="t-ico"><svg class="ic"><use href="#i-shop"/></svg></div><div class="t-sum">Alpen TOKYO</div><div class="t-det">新宿東口の旗艦店。最新のアウトドア用品・ウェア</div></div>
+        <div class="tl" data-t="10:00"><div class="t-start">10:00</div><div class="t-dur">1:00</div><div class="t-ico"><svg class="ic"><use href="#i-game"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E3%82%BF%E3%82%A4%E3%83%88%E3%83%BC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%20%E6%96%B0%E5%AE%BF%E5%8D%97%E5%8F%A3%E3%82%B2%E3%83%BC%E3%83%A0%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89%E5%BA%97" target="_blank" rel="noopener">タイトーステーション</a></div><div class="t-det">新宿南口ゲームワールド店。10:00開店。アーケードとクレーンゲーム</div></div>
+        <div class="tl" data-t="11:00"><div class="t-start">11:00</div><div class="t-dur">1:00</div><div class="t-ico"><svg class="ic"><use href="#i-shop"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E3%83%8F%E3%83%B3%E3%82%BA%E6%96%B0%E5%AE%BF%E5%BA%97" target="_blank" rel="noopener">ハンズ新宿店</a></div><div class="t-det">タカシマヤ タイムズスクエア内。バッグ・トラベルギア・雑貨</div></div>
+        <div class="tl" data-t="12:00"><div class="t-start">12:00</div><div class="t-dur">0:45</div><div class="t-ico"><svg class="ic"><use href="#i-shop"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=Alpen%20TOKYO" target="_blank" rel="noopener">Alpen TOKYO</a></div><div class="t-det">新宿東口の旗艦店。最新のアウトドア用品・ウェア</div></div>
         <div class="tl" data-t="12:45"><div class="t-start">12:45</div><div class="t-dur">0:20</div><div class="t-ico"><svg class="ic"><use href="#i-bag"/></svg></div><div class="t-sum">ロッカーの荷物を回収</div></div>
         <div class="tl" data-t="13:05"><div class="t-start">13:05</div><div class="t-dur">0:14</div><div class="t-ico"><svg class="ic"><use href="#i-train"/></svg></div><div class="t-sum">中央線快速→東京</div></div>
         <div class="tl" data-t="13:19"><div class="t-start">13:19</div><div class="t-dur">0:21</div><div class="t-ico"><svg class="ic"><use href="#i-fork"/></svg></div><div class="t-sum">東京駅 乗り換え</div><div class="t-det">新幹線改札へ。<span class="hl">昼食を購入</span></div></div>
@@ -667,10 +725,40 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
     item.addEventListener('click', function(){
       var on = item.classList.toggle('checked');
       if (on) state[key] = 1; else delete state[key];
-      save(); refreshCounters();
+      if (on){ item.classList.add('just'); setTimeout(function(){ item.classList.remove('just'); refreshFold(); }, 450); }
+      save(); refreshCounters(); refreshFold();
     });
   });
   refreshCounters();
+
+  /* ── チェック済みを折りたたむ（端末に保存） ── */
+  var hideDone = false;
+  try{ hideDone = localStorage.getItem(NS+'hideDone') === '1'; }catch(e){}
+  function refreshFold(){
+    [].slice.call(document.querySelectorAll('.fold')).forEach(function(b){
+      var card = b.closest('.card');
+      var items = [].slice.call(card.querySelectorAll('.item'));
+      var done = items.filter(function(i){ return i.classList.contains('checked'); }).length;
+      card.classList.toggle('hide-done', hideDone);
+      card.classList.toggle('complete', done === items.length);
+      b.setAttribute('aria-pressed', hideDone ? 'true' : 'false');
+      b.textContent = hideDone ? '済みを表示' + (done ? '（' + done + '）' : '') : '済みを隠す';
+      /* 全部済んだ分類は見出しごと隠す */
+      [].slice.call(card.querySelectorAll('.cat')).forEach(function(c){
+        var all = true, n = c.nextElementSibling;
+        while (n && n.classList.contains('item')){ if (!n.classList.contains('checked') || n.classList.contains('just')) all = false; n = n.nextElementSibling; }
+        c.classList.toggle('done', all);
+      });
+    });
+  }
+  [].slice.call(document.querySelectorAll('.fold')).forEach(function(b){
+    b.addEventListener('click', function(){
+      hideDone = !hideDone;
+      try{ localStorage.setItem(NS+'hideDone', hideDone ? '1' : '0'); }catch(e){}
+      refreshFold();
+    });
+  });
+  refreshFold();
 
   /* ── 出発までのカウントダウン ── */
   var DAYS = ['2026-11-20','2026-11-21','2026-11-22','2026-11-23'];
@@ -682,28 +770,45 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
   if (el){
     var idx = DAYS.indexOf(todayKey());
     if (idx >= 0){
-      el.textContent = '旅の ' + (idx+1) + ' 日目';
+      el.innerHTML = '旅の<b>' + (idx+1) + '</b>日目';
     } else {
       var diff = Math.ceil((new Date('2026-11-20T00:00:00') - new Date()) / 86400000);
-      el.textContent = diff > 0 ? '出発まで あと ' + diff + ' 日' : '';
+      el.innerHTML = diff > 0 ? '出発まで あと<b>' + diff + '</b>日' : '';
     }
   }
 
   /* ── 当日は「今ここ」を自動表示 ── */
+  function toMin(r){ var p = r.getAttribute('data-t').split(':'); return (+p[0])*60 + (+p[1]); }
   function markNow(){
     [].slice.call(document.querySelectorAll('.tl.now')).forEach(function(r){ r.classList.remove('now'); });
+    [].slice.call(document.querySelectorAll('.past')).forEach(function(r){ r.classList.remove('past'); });
     var key = todayKey(), i = DAYS.indexOf(key);
-    if (i < 0) return;
-    var card = document.querySelector('.card[data-date="' + key + '"]');
-    if (!card) return;
+    if (i < 0) return null;            /* 旅行前・旅行後は何もしない（全て元の濃さ） */
     var now  = new Date(), mins = now.getHours()*60 + now.getMinutes();
-    var rows = [].slice.call(card.querySelectorAll('.tl[data-t]'));
     var cur  = null;
-    rows.forEach(function(r){
-      var p = r.getAttribute('data-t').split(':');
-      if ((+p[0])*60 + (+p[1]) <= mins) cur = r;
+    [].slice.call(document.querySelectorAll('.card[data-date]')).forEach(function(card){
+      var d = card.getAttribute('data-date');
+      var rows = [].slice.call(card.querySelectorAll('[data-t]'));
+      if (d < key){ rows.forEach(function(r){ r.classList.add('past'); }); return; }
+      if (d > key) return;
+      var tl = rows.filter(function(r){ return r.classList.contains('tl'); });
+      tl.forEach(function(r){ if (toMin(r) <= mins) cur = r; });
+      if (cur) cur.classList.add('now');
+      var curMin = cur ? toMin(cur) : -1;
+      rows.forEach(function(r){
+        if (r === cur) return;
+        if (r.classList.contains('tl') ? toMin(r) < curMin : toMin(r) <= mins) r.classList.add('past');
+      });
     });
-    if (cur) cur.classList.add('now');
+    return cur;
+  }
+  /* 「今ここ」までスクロール（タブの下に収まるように） */
+  function scrollToNow(smooth){
+    var cur = document.querySelector('.tl.now');
+    if (!cur) return;
+    var tabs = document.querySelector('.tabs');
+    var y = cur.getBoundingClientRect().top + window.pageYOffset - (tabs ? tabs.offsetHeight : 0) - 70;
+    window.scrollTo({ top: Math.max(0, y), behavior: smooth ? 'smooth' : 'auto' });
   }
 
   /* ── 初期表示：旅行中はその日のタブ、それ以外は前回のタブ ── */
@@ -714,6 +819,13 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
   if (openTab && document.getElementById(openTab)) activate(openTab, false);
 
   markNow();
+  if (di >= 0) requestAnimationFrame(function(){ scrollToNow(false); });
+  /* 旅行中に当日のタブを押したら「今ここ」へ */
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      if (di >= 0 && b.getAttribute('data-tab') === 'day' + (di+1)) setTimeout(function(){ scrollToNow(true); }, 30);
+    });
+  });
   setInterval(markNow, 60000);
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) markNow(); });
 })();
