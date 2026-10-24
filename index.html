@@ -114,13 +114,20 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
 .tabs{
   position:sticky;top:env(safe-area-inset-top);z-index:30;
   display:flex;gap:.25rem;
-  padding:.55rem 0 .6rem;margin-bottom:.75rem;
+  padding:.55rem .4rem .6rem;margin:0 -.4rem .75rem;
   background:linear-gradient(var(--paper) 80%, hsla(var(--h-base),30%,94%,0));
+  overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;scroll-padding-inline:.4rem;
 }
+.tabs::-webkit-scrollbar{display:none;}
+/* 端にまだタブがある時だけ、その端をうっすら消して「続きがある」と分かるように */
+.tabs.fr{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2rem),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 2rem),transparent);}
+.tabs.fl{-webkit-mask-image:linear-gradient(90deg,transparent,#000 2rem);mask-image:linear-gradient(90deg,transparent,#000 2rem);}
+.tabs.fl.fr{-webkit-mask-image:linear-gradient(90deg,transparent,#000 2rem,#000 calc(100% - 2rem),transparent);mask-image:linear-gradient(90deg,transparent,#000 2rem,#000 calc(100% - 2rem),transparent);}
 .tab-btn{
-  flex:1 1 0;min-width:0;
+  flex:1 0 auto;min-width:4.2rem;
   font-family:var(--font-body);font-weight:700;font-size:.72rem;white-space:nowrap;
-  padding:.6rem .1rem;border-radius:11px;border:1px solid var(--line);
+  padding:.6rem .45rem;border-radius:11px;border:1px solid var(--line);
   background:var(--panel);color:var(--ink-2);cursor:pointer;
   text-align:center;line-height:1.15;
   transition:transform .12s, background .15s, color .15s, border-color .15s;
@@ -193,11 +200,16 @@ body::before{ /* iPhoneのノッチ／Dynamic Island下の帯 */
   border-bottom:none;border-top:2px solid var(--line);font-weight:700;color:var(--brand);
   padding-top:.5rem;
 }
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem;margin-top:.6rem;}
-.stats.stats-3{grid-template-columns:repeat(3,1fr);}
-.stats .s{background:var(--c-bg);border-radius:10px;padding:.5rem .2rem;text-align:center;}
-.stats .n{font-family:var(--font-display);font-weight:700;font-size:.92rem;line-height:1.25;font-variant-numeric:tabular-nums;}
-.stats .n .u{font-size:.6rem;font-weight:500;margin-left:.05rem;}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.3rem;margin-top:.6rem;}
+.stats.stats-3{grid-template-columns:repeat(3,minmax(0,1fr));}
+.stats.stats-5{grid-template-columns:repeat(5,minmax(0,1fr));gap:.22rem;}
+.stats .s{background:var(--c-bg);border-radius:10px;padding:.5rem .15rem;text-align:center;min-width:0;}
+.stats .n{display:flex;align-items:baseline;justify-content:center;gap:.06rem;white-space:nowrap;
+  font-family:var(--font-display);font-weight:700;font-size:.92rem;line-height:1.25;font-variant-numeric:tabular-nums;}
+.stats .n .u{font-size:.6rem;font-weight:500;}
+.stats.stats-4 .n{font-size:.86rem;}
+.stats.stats-5 .n{font-size:.78rem;}
+.stats.stats-5 .n .u{font-size:.54rem;}
 .stats .l{font-size:.62rem;color:var(--ink-2);line-height:1.3;margin-top:.1rem;}
 
 /* ───────── タイムライン（2段＋テーブル整列） ───────── */
@@ -554,7 +566,7 @@ a.map:active{background:var(--c-bg);}
       </div>
       <div class="mt">
         <div class="stats stats-3">
-          <div class="s"><div class="n">2,230<span class="u">m</span></div><div class="l">百名山16座目</div></div>
+          <div class="s"><div class="n">2,230<span class="u">m</span></div><div class="l">百名山17座目</div></div>
           <div class="s"><div class="n">5:26</div><div class="l">休憩30分</div></div>
           <div class="s"><div class="n">19</div><div class="l">ふつう</div></div>
         </div>
@@ -571,7 +583,7 @@ a.map:active{background:var(--c-bg);}
         <div class="tl hike" data-t="10:15"><div class="t-start">10:15</div><div class="t-dur">0:58</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">瑞牆山荘（登山開始）</div></div>
         <div class="tl hike" data-t="11:13"><div class="t-start">11:13</div><div class="t-dur">0:47</div><div class="t-ico"><svg class="ic"><use href="#i-lodge"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E5%AF%8C%E5%A3%AB%E8%A6%8B%E5%B9%B3%E5%B0%8F%E5%B1%8B" target="_blank" rel="noopener">富士見平小屋</a></div><div class="t-det">1泊2食で予約済み。受付して宿泊荷物をデポ。百名山バッジ（瑞牆山・金峰山）を購入。15分休憩して11:28発、天鳥川までいったん下る</div></div>
         <div class="tl hike" data-t="12:00"><div class="t-start">12:00</div><div class="t-dur">1:38</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">天鳥川出合・桃太郎岩</div><div class="t-det">ここから山頂まで急登。梯子と鎖が続く</div></div>
-        <div class="tl hike" data-t="13:38"><div class="t-start">13:38</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-summit"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E7%91%9E%E7%89%86%E5%B1%B1" target="_blank" rel="noopener">瑞牆山 山頂</a>（2,230m）</div><div class="t-det">日本百名山 通算16座目。15分休憩・昼食。大ヤスリ岩と金峰山を望む</div></div>
+        <div class="tl hike" data-t="13:38"><div class="t-start">13:38</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-summit"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E7%91%9E%E7%89%86%E5%B1%B1" target="_blank" rel="noopener">瑞牆山 山頂</a>（2,230m）</div><div class="t-det">日本百名山 通算17座目。15分休憩・昼食。大ヤスリ岩と金峰山を望む</div></div>
         <div class="tl hike" data-t="13:53"><div class="t-start">13:53</div><div class="t-dur">1:48</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">下山開始</div><div class="t-det">往路を戻る。<span class="warn">日陰の岩は凍結に注意</span></div></div>
         <div class="tl hike" data-t="15:41"><div class="t-start">15:41</div><div class="t-dur">1:49</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">富士見平小屋（下山完了）</div><div class="t-det">16:00までに帰着。日入は16:35</div></div>
         <div class="sun set" data-t="16:35"><div class="s-t">16:35</div><div class="s-d"></div><div>日の入</div></div>
@@ -600,7 +612,7 @@ a.map:active{background:var(--c-bg);}
       </div>
       <div class="mt">
         <div class="stats stats-3">
-          <div class="s"><div class="n">2,599<span class="u">m</span></div><div class="l">百名山17座目</div></div>
+          <div class="s"><div class="n">2,599<span class="u">m</span></div><div class="l">百名山18座目</div></div>
           <div class="s"><div class="n">8:10</div><div class="l">休憩30分</div></div>
           <div class="s"><div class="n">26</div><div class="l">きつい</div></div>
         </div>
@@ -613,7 +625,7 @@ a.map:active{background:var(--c-bg);}
         <div class="tl hike" data-t="07:00"><div class="t-start">7:00</div><div class="t-dur">1:25</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">大日小屋</div></div>
         <div class="tl hike" data-t="08:25"><div class="t-start">8:25</div><div class="t-dur">0:25</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">丸山</div></div>
         <div class="tl hike" data-t="08:50"><div class="t-start">8:50</div><div class="t-dur">1:02</div><div class="t-ico"><svg class="ic"><use href="#i-up"/></svg></div><div class="t-sum">砂払ノ頭</div><div class="t-det">森林限界を抜けて稜線歩きへ。<span class="warn">風が強いので防寒着と手袋をここで</span></div></div>
-        <div class="tl hike" data-t="09:52"><div class="t-start">9:52</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-summit"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E9%87%91%E5%B3%B0%E5%B1%B1" target="_blank" rel="noopener">金峰山 山頂</a>（2,599m）</div><div class="t-det">日本百名山 通算17座目。15分休憩。五丈岩、晴れれば富士山と南アルプス</div></div>
+        <div class="tl hike" data-t="09:52"><div class="t-start">9:52</div><div class="t-dur">0:15</div><div class="t-ico"><svg class="ic"><use href="#i-summit"/></svg></div><div class="t-sum"><a class="map" href="https://www.google.com/maps/search/?api=1&query=%E9%87%91%E5%B3%B0%E5%B1%B1" target="_blank" rel="noopener">金峰山 山頂</a>（2,599m）</div><div class="t-det">日本百名山 通算18座目。15分休憩。五丈岩、晴れれば富士山と南アルプス</div></div>
         <div class="tl hike" data-t="10:07"><div class="t-start">10:07</div><div class="t-dur">0:52</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">下山開始</div><div class="t-det">往路を慎重に戻る。<span class="warn">遅くとも10:15には山頂を出る</span></div></div>
         <div class="tl hike" data-t="10:59"><div class="t-start">10:59</div><div class="t-dur">0:20</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">砂払ノ頭</div></div>
         <div class="tl hike" data-t="11:19"><div class="t-start">11:19</div><div class="t-dur">1:05</div><div class="t-ico"><svg class="ic"><use href="#i-down"/></svg></div><div class="t-sum">丸山</div></div>
@@ -691,9 +703,29 @@ a.map:active{background:var(--c-bg);}
   /* ── タブ切り替え ── */
   var btns   = [].slice.call(document.querySelectorAll('.tab-btn'));
   var panels = [].slice.call(document.querySelectorAll('.tab-panel'));
+  var tabsEl = document.querySelector('.tabs');
+  /* 選んだタブを横スクロールの中央へ */
+  function centerTab(b, smooth){
+    if (!tabsEl || !b) return;
+    var left = b.offsetLeft - (tabsEl.clientWidth - b.offsetWidth) / 2;
+    try{ tabsEl.scrollTo({ left: Math.max(0, left), behavior: smooth ? 'smooth' : 'auto' }); }
+    catch(e){ tabsEl.scrollLeft = Math.max(0, left); }
+  }
+  function edgeFade(){
+    if (!tabsEl) return;
+    var max = tabsEl.scrollWidth - tabsEl.clientWidth;
+    tabsEl.classList.toggle('fl', tabsEl.scrollLeft > 4);
+    tabsEl.classList.toggle('fr', tabsEl.scrollLeft < max - 4);
+  }
+  if (tabsEl){
+    tabsEl.addEventListener('scroll', edgeFade, { passive: true });
+    window.addEventListener('resize', function(){ edgeFade(); centerTab(tabsEl.querySelector('.tab-btn.active'), false); });
+  }
   function activate(id, remember){
     btns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab') === id); });
     panels.forEach(function(p){ p.classList.toggle('is-active', p.id === id); });
+    centerTab(btns.filter(function(b){ return b.getAttribute('data-tab') === id; })[0], remember);
+    edgeFade();
     if (remember){ try{ localStorage.setItem(NS+'tab', id); }catch(e){} }
   }
   btns.forEach(function(b){
@@ -822,6 +854,7 @@ a.map:active{background:var(--c-bg);}
   });
   setInterval(markNow, 60000);
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) markNow(); });
+  centerTab(document.querySelector('.tab-btn.active'), false); edgeFade();
 })();
 </script>
 
